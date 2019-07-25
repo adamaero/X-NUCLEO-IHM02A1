@@ -69,6 +69,7 @@
 
 /* Motor Control Expansion Board. */
 XNucleoIHM02A1 *x_nucleo_ihm02a1;
+
 SPIClass *dev_spi;
 L6470 **motors;
 int loops = 0;
@@ -141,7 +142,7 @@ void setup()
 
     /* Please verify your board has these spi pins */
     /* Initializing SPI bus. */
-    dev_spi = new SPIClass(D11, D12, D3);
+    dev_spi = new SPIClass(D11, D12, D13);                  // @@ D3 to D13
     SerialPort.begin(115200);
 
     /* Initializing Motor Control Expansion Board. */
