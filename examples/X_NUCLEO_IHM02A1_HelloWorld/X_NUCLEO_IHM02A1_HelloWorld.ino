@@ -148,7 +148,7 @@ void setup()
 
     /* Initializing Motor Control Expansion Board. */
     x_nucleo_ihm02a1 = new XNucleoIHM02A1(&L6470_init[0], &L6470_init[1], A4, A5, D4, A2, dev_spi);
-    x_nucleo_ihm02a1two = new XNucleoIHM02A1(&L6470_init[0], &L6470_init[1], A4, A5, D4, A7, dev_spi);  // @@ new, replace A7 with different.
+    x_nucleo_ihm02a1two = new XNucleoIHM02A1(&L6470_init[0], &L6470_init[1], A4, A5, D4, D2, dev_spi);  // @@ new: D2
 
 
     /* Building a list of motor control components. */
