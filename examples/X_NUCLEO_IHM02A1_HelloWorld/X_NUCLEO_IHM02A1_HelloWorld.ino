@@ -69,6 +69,7 @@
 
 /* Motor Control Expansion Board. */
 XNucleoIHM02A1 *x_nucleo_ihm02a1;
+XNucleoIHM02A1 *x_nucleo_ihm02a1two;    // @@ new
 
 SPIClass *dev_spi;
 L6470 **motors;
@@ -147,9 +148,13 @@ void setup()
 
     /* Initializing Motor Control Expansion Board. */
     x_nucleo_ihm02a1 = new XNucleoIHM02A1(&L6470_init[0], &L6470_init[1], A4, A5, D4, A2, dev_spi);
+    x_nucleo_ihm02a1two = new XNucleoIHM02A1(&L6470_init[0], &L6470_init[1], A4, A5, D4, A7, dev_spi);  // @@ new, replace A7 with different.
+
 
     /* Building a list of motor control components. */
     motors = x_nucleo_ihm02a1->get_components();
+    motors = x_nucleo_ihm02a1two->get_components();         // @@ new
+
 }
 
 /* loop ----------------------------------------------------------------------*/
