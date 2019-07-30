@@ -73,6 +73,7 @@ XNucleoIHM02A1 *x_nucleo_ihm02a1two;    // @@ new
 
 SPIClass *dev_spi;
 L6470 **motors;
+L6470 **motorstwo;
 int loops = 0;
 
 /* Initialization parameters of the motors connected to the expansion board. */
