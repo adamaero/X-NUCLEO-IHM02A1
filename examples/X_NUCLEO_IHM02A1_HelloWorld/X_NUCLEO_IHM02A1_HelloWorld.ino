@@ -80,7 +80,7 @@ int loops = 0;
 L6470_init_t L6470_init[L6470DAISYCHAINSIZE] = {
     /* First Motor. */
     {
-        9.0,                           /* Motor supply voltage in V. */
+        24.0,                           /* Motor supply voltage in V. */
         400,                           /* Min number of steps per revolution for the motor. */
         1.7,                           /* Max motor phase voltage in A. */
         3.06,                          /* Max motor phase voltage in V. */
@@ -108,7 +108,7 @@ L6470_init_t L6470_init[L6470DAISYCHAINSIZE] = {
 
     /* Second Motor. */
     {
-        9.0,                           /* Motor supply voltage in V. */
+        24.0,                           /* Motor supply voltage in V. */
         400,                           /* Min number of steps per revolution for the motor. */
         1.7,                           /* Max motor phase voltage in A. */
         3.06,                          /* Max motor phase voltage in V. */
@@ -182,15 +182,19 @@ void loop()
 
     /* Setting the home position. */
     motors[0]->set_home();
+    motors[1]->set_home();    
     motorstwo[0]->set_home();                                   // @@
+    motorstwo[1]->set_home();                                   // @@
 
     /* Waiting. */
     delay(DELAY_1);
 
     /* Getting the current position. */
     int position = motors[0]->get_position();
+    int position = motors[1]->get_position();    
     int positiontwo = motorstwo[0]->get_position();
-
+    int positiontwo = motorstwo[1]->get_position();
+    
     /* Printing to the console. */
     SerialPort.print("--> Getting the current position: ");
     SerialPort.print(position);
@@ -206,15 +210,21 @@ void loop()
 
     /* Moving. */
     motors[0]->move(StepperMotor::FWD, STEPS_1);
+    motors[1]->move(StepperMotor::FWD, STEPS_1);    
     motorstwo[0]->move(StepperMotor::FWD, STEPS_1);
+    motorstwo[1]->move(StepperMotor::FWD, STEPS_1);
 
     /* Waiting while active. */
     motors[0]->wait_while_active();
-    motorstwo[0]->move(StepperMotor::FWD, STEPS_1);
+    motors[1]->wait_while_active();
+    motorstwo[0]->move(StepperMotor::FWD, STEPS_1);    
+    motorstwo[1]->move(StepperMotor::FWD, STEPS_1);
 
     /* Getting the current position. */
     position = motors[0]->get_position();
-    positiontwo = motorstwo[0]->get_position();
+    position = motors[1]->get_position();
+    positiontwo = motorstwo[0]->get_position();    
+    positiontwo = motorstwo[1]->get_position();
 
     /* Printing to the console. */
     SerialPort.print("--> Getting the current position: ");
@@ -226,7 +236,9 @@ void loop()
 
     /* Marking the current position. */
     motors[0]->set_mark();
-    motorstwo[0]->set_mark();
+    motors[1]->set_mark();
+    motorstwo[0]->set_mark();    
+    motorstwo[1]->set_mark();
 
     /* Waiting. */
     delay(DELAY_1);
@@ -460,6 +472,9 @@ void loop()
 //     delay(DELAY_2);
 
 
+    
+    
+    
     /*----- Doing a full revolution on each motor, one after the other. -----*/
 
     /* Printing to the console. */
@@ -485,20 +500,24 @@ void loop()
     /* Waiting. */
     delay(DELAY_2);
 
+    
+    
+    
+    
 
-    /*----- High Impedance State. -----*/
+//     /*----- High Impedance State. -----*/
 
-    /* Printing to the console. */
-    SerialPort.print("--> High Impedance State.\r\n\r\n");
+//     /* Printing to the console. */
+//     SerialPort.print("--> High Impedance State.\r\n\r\n");
 
-    /* Preparing each motor to set High Impedance State. */
-    for (int m = 0; m < L6470DAISYCHAINSIZE; m++) {
-        motors[m]->prepare_hard_hiz();
-    }
+//     /* Preparing each motor to set High Impedance State. */
+//     for (int m = 0; m < L6470DAISYCHAINSIZE; m++) {
+//         motors[m]->prepare_hard_hiz();
+//     }
 
-    /* Performing the action on each motor at the same time. */
-    x_nucleo_ihm02a1->perform_prepared_actions();
+//     /* Performing the action on each motor at the same time. */
+//     x_nucleo_ihm02a1->perform_prepared_actions();
 
-    /* Waiting. */
-    delay(DELAY_2);
+//     /* Waiting. */
+//     delay(DELAY_2);
 }
