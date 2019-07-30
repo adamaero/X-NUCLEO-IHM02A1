@@ -148,12 +148,12 @@ void setup()
 
     /* Initializing Motor Control Expansion Board. */
     x_nucleo_ihm02a1 = new XNucleoIHM02A1(&L6470_init[0], &L6470_init[1], A4, A5, D4, A2, dev_spi);
-    x_nucleo_ihm02a1two = new XNucleoIHM02A1(&L6470_init[0], &L6470_init[1], A4, A5, D4, D2, dev_spi);  // @@ new: D2
-
+    x_nucleo_ihm02a1two = new XNucleoIHM02A1(&L6470_init[0], &L6470_init[1], A4, D2,   D4,   A2, dev_spi);  // @@ new: D2
+                                                                             //ssel, mosi, miso, sclk
 
     /* Building a list of motor control components. */
     motors = x_nucleo_ihm02a1->get_components();
-    motors = x_nucleo_ihm02a1two->get_components();         // @@ new
+    motorstwo = x_nucleo_ihm02a1two->get_components();         // @@ new
 
 }
 
@@ -181,12 +181,14 @@ void loop()
 
     /* Setting the home position. */
     motors[0]->set_home();
+    motorstwo[0]->set_home();                                   // @@
 
     /* Waiting. */
     delay(DELAY_1);
 
     /* Getting the current position. */
     int position = motors[0]->get_position();
+    int positiontwo = motorstwo[0]->get_position();
 
     /* Printing to the console. */
     SerialPort.print("--> Getting the current position: ");
@@ -203,13 +205,16 @@ void loop()
 
     /* Moving. */
     motors[0]->move(StepperMotor::FWD, STEPS_1);
+    motorstwo[0]->move(StepperMotor::FWD, STEPS_1);
 
     /* Waiting while active. */
     motors[0]->wait_while_active();
+    motorstwo[0]->move(StepperMotor::FWD, STEPS_1);
 
     /* Getting the current position. */
     position = motors[0]->get_position();
-    
+    positiontwo = motorstwo[0]->get_position();
+
     /* Printing to the console. */
     SerialPort.print("--> Getting the current position: ");
     SerialPort.print(position);
@@ -220,228 +225,238 @@ void loop()
 
     /* Marking the current position. */
     motors[0]->set_mark();
+    motorstwo[0]->set_mark();
 
     /* Waiting. */
     delay(DELAY_1);
 
-    /* Printing to the console. */
-    SerialPort.print("--> Moving backward ");
-    SerialPort.print(STEPS_2);
-    SerialPort.print(" steps.\r\n");
+//     /* Printing to the console. */
+//     SerialPort.print("--> Moving backward ");
+//     SerialPort.print(STEPS_2);
+//     SerialPort.print(" steps.\r\n");
 
-    /* Moving. */
-    motors[0]->move(StepperMotor::BWD, STEPS_2);
+//     /* Moving. */
+//     motors[0]->move(StepperMotor::BWD, STEPS_2);
+//     motorstwo[0]->move(StepperMotor::BWD, STEPS_2);
 
-    /* Waiting while active. */
-    motors[0]->wait_while_active();
+//     /* Waiting while active. */
+//     motors[0]->wait_while_active();
+//     motorstwo[0]->wait_while_active();
 
-    /* Waiting. */
-    delay(DELAY_1);
+//     /* Waiting. */
+//     delay(DELAY_1);
 
-    /* Getting the current position. */
-    position = motors[0]->get_position();
+//     /* Getting the current position. */
+//     position = motors[0]->get_position();
+//     positiontwo = motorstwo[0]->get_position();
+
+//     /* Printing to the console. */
+//     SerialPort.print("--> Getting the current position: ");
+//     SerialPort.print(position);
+//     SerialPort.print("\r\n");
+
+//     /* Waiting. */
+//     delay(DELAY_1);
+
+//     /* Printing to the console. */
+//     SerialPort.print("--> Going to marked position.\r\n");
+
+//     /* Going to marked position. */
+//     motors[0]->go_mark();
+//     motorstwo[0]->go_mark();
+
+//     /* Waiting while active. */
+//     motors[0]->wait_while_active();
+//     motorstwo[0]->wait_while_active();
+
+//     /* Waiting. */
+//     delay(DELAY_1);
+
+//     /* Getting the current position. */
+//     position = motors[0]->get_position();
+//     position = motorstwo[0]->get_position();
+
+//     /* Printing to the console. */
+//     SerialPort.print("--> Getting the current position: ");
+//     SerialPort.print(position);
+//     SerialPort.print("\r\n");
+
+//     /* Waiting. */
+//     delay(DELAY_1);
+
+//     /* Printing to the console. */
+//     SerialPort.print("--> Going to home position.\r\n");
+
+//     /* Going to home position. */
+//     motors[0]->go_home();
+//     motorstwo[0]->go_home();
+
+//     /* Waiting while active. */
+//     motors[0]->wait_while_active();
+//     motorstwo[0]->wait_while_active();
+
+//     /* Waiting. */
+//     delay(DELAY_1);
+
+//     /* Getting the current position. */
+//     position = motors[0]->get_position();
+//     positiontwo = motorstwo[0]->get_position();
     
-    /* Printing to the console. */
-    SerialPort.print("--> Getting the current position: ");
-    SerialPort.print(position);
-    SerialPort.print("\r\n");
+//     /* Printing to the console. */
+//     SerialPort.print("--> Getting the current position: ");
+//     SerialPort.print(position);
+//     SerialPort.print("\r\n");
 
-    /* Waiting. */
-    delay(DELAY_1);
+//     /* Waiting. */
+//     delay(DELAY_1);
 
-    /* Printing to the console. */
-    SerialPort.print("--> Going to marked position.\r\n");
+//     /* Printing to the console. */
+//     SerialPort.print("--> Halving the microsteps.\r\n");
 
-    /* Going to marked position. */
-    motors[0]->go_mark();
+//     /* Halving the microsteps. */
+//     L6470_init[0].step_sel = (L6470_init[0].step_sel > 0 ? L6470_init[0].step_sel -  1 : L6470_init[0].step_sel);
+//     if (!motors[0]->set_step_mode((StepperMotor::step_mode_t) L6470_init[0].step_sel)) {
+//         SerialPort.print("    Step Mode not allowed.\r\n");
+//     }
+
+//     /* Waiting. */
+//     delay(DELAY_1);
+
+//     /* Printing to the console. */
+//     SerialPort.print("--> Setting home position.\r\n");
+
+//     /* Setting the home position. */
+//     motors[0]->set_home();
+
+//     /* Waiting. */
+//     delay(DELAY_1);
+
+//     /* Getting the current position. */
+//     position = motors[0]->get_position();
     
-    /* Waiting while active. */
-    motors[0]->wait_while_active();
+//     /* Printing to the console. */
+//     SerialPort.print("--> Getting the current position: ");
+//     SerialPort.print(position);
+//     SerialPort.print("\r\n");
 
-    /* Waiting. */
-    delay(DELAY_1);
+//     /* Waiting. */
+//     delay(DELAY_1);
 
-    /* Getting the current position. */
-    position = motors[0]->get_position();
+//     /* Printing to the console. */
+//     SerialPort.print("--> Moving forward ");
+//     SerialPort.print(STEPS_1);
+//     SerialPort.print(" steps.\r\n");
+
+//     /* Moving. */
+//     motors[0]->move(StepperMotor::FWD, STEPS_1);
+
+//     /* Waiting while active. */
+//     motors[0]->wait_while_active();
+
+//     /* Getting the current position. */
+//     position = motors[0]->get_position();
     
-    /* Printing to the console. */
-    SerialPort.print("--> Getting the current position: ");
-    SerialPort.print(position);
-    SerialPort.print("\r\n");
+//     /* Printing to the console. */
+//     SerialPort.print("--> Getting the current position: ");
+//     SerialPort.print(position);
+//     SerialPort.print("\r\n");
 
-    /* Waiting. */
-    delay(DELAY_1);
+//     /* Printing to the console. */
+//     SerialPort.print("--> Marking the current position.\r\n");
 
-    /* Printing to the console. */
-    SerialPort.print("--> Going to home position.\r\n");
+//     /* Marking the current position. */
+//     motors[0]->set_mark();
 
-    /* Going to home position. */
-    motors[0]->go_home();
-    
-    /* Waiting while active. */
-    motors[0]->wait_while_active();
-
-    /* Waiting. */
-    delay(DELAY_1);
-
-    /* Getting the current position. */
-    position = motors[0]->get_position();
-    
-    /* Printing to the console. */
-    SerialPort.print("--> Getting the current position: ");
-    SerialPort.print(position);
-    SerialPort.print("\r\n");
-
-    /* Waiting. */
-    delay(DELAY_1);
-
-    /* Printing to the console. */
-    SerialPort.print("--> Halving the microsteps.\r\n");
-
-    /* Halving the microsteps. */
-    L6470_init[0].step_sel = (L6470_init[0].step_sel > 0 ? L6470_init[0].step_sel -  1 : L6470_init[0].step_sel);
-    if (!motors[0]->set_step_mode((StepperMotor::step_mode_t) L6470_init[0].step_sel)) {
-        SerialPort.print("    Step Mode not allowed.\r\n");
-    }
-
-    /* Waiting. */
-    delay(DELAY_1);
-
-    /* Printing to the console. */
-    SerialPort.print("--> Setting home position.\r\n");
-
-    /* Setting the home position. */
-    motors[0]->set_home();
-
-    /* Waiting. */
-    delay(DELAY_1);
-
-    /* Getting the current position. */
-    position = motors[0]->get_position();
-    
-    /* Printing to the console. */
-    SerialPort.print("--> Getting the current position: ");
-    SerialPort.print(position);
-    SerialPort.print("\r\n");
-
-    /* Waiting. */
-    delay(DELAY_1);
-
-    /* Printing to the console. */
-    SerialPort.print("--> Moving forward ");
-    SerialPort.print(STEPS_1);
-    SerialPort.print(" steps.\r\n");
-
-    /* Moving. */
-    motors[0]->move(StepperMotor::FWD, STEPS_1);
-
-    /* Waiting while active. */
-    motors[0]->wait_while_active();
-
-    /* Getting the current position. */
-    position = motors[0]->get_position();
-    
-    /* Printing to the console. */
-    SerialPort.print("--> Getting the current position: ");
-    SerialPort.print(position);
-    SerialPort.print("\r\n");
-
-    /* Printing to the console. */
-    SerialPort.print("--> Marking the current position.\r\n");
-
-    /* Marking the current position. */
-    motors[0]->set_mark();
-
-    /* Waiting. */
-    delay(DELAY_2);
+//     /* Waiting. */
+//     delay(DELAY_2);
 
 
-    /*----- Running together for a certain amount of time. -----*/
+//     /*----- Running together for a certain amount of time. -----*/
 
-    /* Printing to the console. */
-    SerialPort.print("--> Running together for ");
-    SerialPort.print((DELAY_3 / 1000));
-    SerialPort.print(" seconds.\r\n");
+//     /* Printing to the console. */
+//     SerialPort.print("--> Running together for ");
+//     SerialPort.print((DELAY_3 / 1000));
+//     SerialPort.print(" seconds.\r\n");
 
-    /* Preparing each motor to perform a run at a specified speed. */
-    for (int m = 0; m < L6470DAISYCHAINSIZE; m++) {
-        motors[m]->prepare_run(StepperMotor::BWD, 400);
-    }
+//     /* Preparing each motor to perform a run at a specified speed. */
+//     for (int m = 0; m < L6470DAISYCHAINSIZE; m++) {
+//         motors[m]->prepare_run(StepperMotor::BWD, 400);
+//     }
 
-    /* Performing the action on each motor at the same time. */
-    x_nucleo_ihm02a1->perform_prepared_actions();
+//     /* Performing the action on each motor at the same time. */
+//     x_nucleo_ihm02a1->perform_prepared_actions();
 
-    /* Waiting. */
-    delay(DELAY_3);
-
-
-    /*----- Increasing the speed while running. -----*/
-
-    /* Preparing each motor to perform a run at a specified speed. */
-    for (int m = 0; m < L6470DAISYCHAINSIZE; m++) {
-        motors[m]->prepare_get_speed();
-    }
-
-    /* Performing the action on each motor at the same time. */
-    uint32_t* results = x_nucleo_ihm02a1->perform_prepared_actions();
-
-    /* Printing to the console. */
-    SerialPort.print("    Speed: M1 ");
-    SerialPort.print(results[0]);
-    SerialPort.print(", M2 ");
-    SerialPort.print(results[1]);
-    SerialPort.print(".\r\n");
-
-    /* Printing to the console. */
-    SerialPort.print("--> Doublig the speed while running again for ");
-    SerialPort.print((DELAY_3 / 1000));
-    SerialPort.print(" seconds.\r\n");
-
-    /* Preparing each motor to perform a run at a specified speed. */
-    for (int m = 0; m < L6470DAISYCHAINSIZE; m++) {
-        motors[m]->prepare_run(StepperMotor::BWD, results[m] << 1);
-    }
-
-    /* Performing the action on each motor at the same time. */
-    results = x_nucleo_ihm02a1->perform_prepared_actions();
-
-    /* Waiting. */
-    delay(DELAY_3);
-
-    /* Preparing each motor to perform a run at a specified speed. */
-    for (int m = 0; m < L6470DAISYCHAINSIZE; m++) {
-        motors[m]->prepare_get_speed();
-    }
-
-    /* Performing the action on each motor at the same time. */
-    results = x_nucleo_ihm02a1->perform_prepared_actions();
-
-    /* Printing to the console. */
-    SerialPort.print("    Speed: M1 ");
-    SerialPort.print(results[0]);
-    SerialPort.print(", M2 ");
-    SerialPort.print(results[1]);
-    SerialPort.print(".\r\n");
-
-    /* Waiting. */
-    delay(DELAY_1);
+//     /* Waiting. */
+//     delay(DELAY_3);
 
 
-    /*----- Hard Stop. -----*/
+//     /*----- Increasing the speed while running. -----*/
 
-    /* Printing to the console. */
-    SerialPort.print("--> Hard Stop.\r\n");
+//     /* Preparing each motor to perform a run at a specified speed. */
+//     for (int m = 0; m < L6470DAISYCHAINSIZE; m++) {
+//         motors[m]->prepare_get_speed();
+//     }
 
-    /* Preparing each motor to perform a hard stop. */
-    for (int m = 0; m < L6470DAISYCHAINSIZE; m++) {
-        motors[m]->prepare_hard_stop();
-    }
+//     /* Performing the action on each motor at the same time. */
+//     uint32_t* results = x_nucleo_ihm02a1->perform_prepared_actions();
 
-    /* Performing the action on each motor at the same time. */
-    x_nucleo_ihm02a1->perform_prepared_actions();
+//     /* Printing to the console. */
+//     SerialPort.print("    Speed: M1 ");
+//     SerialPort.print(results[0]);
+//     SerialPort.print(", M2 ");
+//     SerialPort.print(results[1]);
+//     SerialPort.print(".\r\n");
 
-    /* Waiting. */
-    delay(DELAY_2);
+//     /* Printing to the console. */
+//     SerialPort.print("--> Doublig the speed while running again for ");
+//     SerialPort.print((DELAY_3 / 1000));
+//     SerialPort.print(" seconds.\r\n");
+
+//     /* Preparing each motor to perform a run at a specified speed. */
+//     for (int m = 0; m < L6470DAISYCHAINSIZE; m++) {
+//         motors[m]->prepare_run(StepperMotor::BWD, results[m] << 1);
+//     }
+
+//     /* Performing the action on each motor at the same time. */
+//     results = x_nucleo_ihm02a1->perform_prepared_actions();
+
+//     /* Waiting. */
+//     delay(DELAY_3);
+
+//     /* Preparing each motor to perform a run at a specified speed. */
+//     for (int m = 0; m < L6470DAISYCHAINSIZE; m++) {
+//         motors[m]->prepare_get_speed();
+//     }
+
+//     /* Performing the action on each motor at the same time. */
+//     results = x_nucleo_ihm02a1->perform_prepared_actions();
+
+//     /* Printing to the console. */
+//     SerialPort.print("    Speed: M1 ");
+//     SerialPort.print(results[0]);
+//     SerialPort.print(", M2 ");
+//     SerialPort.print(results[1]);
+//     SerialPort.print(".\r\n");
+
+//     /* Waiting. */
+//     delay(DELAY_1);
+
+
+//     /*----- Hard Stop. -----*/
+
+//     /* Printing to the console. */
+//     SerialPort.print("--> Hard Stop.\r\n");
+
+//     /* Preparing each motor to perform a hard stop. */
+//     for (int m = 0; m < L6470DAISYCHAINSIZE; m++) {
+//         motors[m]->prepare_hard_stop();
+//     }
+
+//     /* Performing the action on each motor at the same time. */
+//     x_nucleo_ihm02a1->perform_prepared_actions();
+
+//     /* Waiting. */
+//     delay(DELAY_2);
 
 
     /*----- Doing a full revolution on each motor, one after the other. -----*/
